@@ -1,0 +1,83 @@
+---
+title: "Structure of the Amplicons"
+output: html_notebook
+---
+
+We visualize using Geneious the general structure of the amplicons we saw, and most of them have the structure P5-SeqPrimer-PcrPrimer-*AMPLICON*-PCr_Rev_Primer-SeqPrimer-P7. 
+
+Should we get some numbers on this. Using **Cutadapt**
+
+```{bash}
+
+INPUTFOLDER=/data/minknow/data/Run_001_20220512_Aguirre/no_sample/20220512_1258_MN40189_FAT20945_6a02eb50/fastq_sup/pass
+
+ls $INPUTFOLDER
+
+cd $INPUTFOLDER
+
+
+```
+
+```{bash}
+INPUTFOLDER=/data/minknow/data/Run_001_20220512_Aguirre/no_sample/20220512_1258_MN40189_FAT20945_6a02eb50/fastq_sup/pass
+pwd
+cd $INPUTFOLDER
+
+cat 
+# awk 'NR%4==2 { print length}' test.fastq
+
+revcom (){
+
+  echo $1 |\
+    rev   |\
+    tr ACGTWSMKRYBDHVNacgtwsmkrybdhvn TGCASWKMYRVHDBNtgcaswkmyrvhdbn
+
+}
+
+revcom CAAGCAGAAGACGGCATACGAGAT
+
+revcom AATGATACGGCGACCACCGAGATCTACAC
+
+## And now on the back
+
+#cutadapt -a ATCTCGTATGCCGTCTTCTGCTTG --discard-untrimmed -o second.fastq test.fastq
+
+## So we have to rc the P7 for it to work
+
+
+cutadapt -g AATGATACGGCGACCACCGAGATCTACAC...ATCTCGTATGCCGTCTTCTGCTTG --untrimmed-output untrimmed.fastq -o p5first.fastq -e 0.3 all.fastq  --quiet
+
+cutadapt -g CAAGCAGAAGACGGCATACGAGAT...GTGTAGATCTCGGTGGTCGCCGTATCATT --untrimmed-output untrimmed.fastq -o p7first.fastq -e 0.3 untrimmed.fastq --quiet
+
+#cutadapt -g CAAGCAGAAGACGGCATACGAGAT --discard-untrimmed -o p7first.fastq fastq_runid_0b73e929de99af4c4fbc81b974ac2aa70d5134eb_0_0.fastq
+
+wc -l p5first.fastq p7first.fastq
+
+#seq -rc p7first.fastq > p7first_rc.fastq
+
+seqkit seq -rp p7first.fastq -t DNA >> p5first.fastq
+
+
+awk 'NR%4==2 { print substr($0,1,10)}' p5first.fastq | sort | uniq -c | sort
+
+
+```
+
+```{bash}
+
+INPUTFOLDER=/data/minknow/data/Run_001_20220512_Aguirre/no_sample/20220512_1258_MN40189_FAT20945_6a02eb50/fastq_sup/pass
+pwd
+cd $INPUTFOLDER
+
+
+
+```
+
+
+
+# How many there were
+```{r}
+
+
+```
+
