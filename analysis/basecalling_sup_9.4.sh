@@ -12,8 +12,9 @@ mkdir "${OUTPUT_FOLDER}"
 
 
 
-/home/mk1b/gpu_guppy/ont-guppy/bin/guppy_basecaller \
+  /home/mk1b/gpu_guppy/ont-guppy/bin/guppy_basecaller \
 -i "${INPUT_FOLDER}" \
  -c dna_r9.4.1_450bps_sup.cfg \
  -s "${OUTPUT_FOLDER}" \
-  --recursive --device cuda:0 --chunks_per_runner 24
+ --trim_adapters \
+  --recursive --device cuda:0 --chunks_per_runner 4
